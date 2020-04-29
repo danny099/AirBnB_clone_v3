@@ -8,6 +8,7 @@ from api.v1.views import app_views
 from models import storage
 from models import *
 
+
 @app_views.route('/states', strict_slashes=False, methods=['GET'])
 @app_views.route('/states/<state_id>', strict_slashes=False, methods=['GET'])
 def getAll(state_id=None):
