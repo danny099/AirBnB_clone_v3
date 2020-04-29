@@ -72,7 +72,9 @@ class DBStorage:
         self.__session = Session
 
     def get(self, cls, id):
-        """" A method to retrieve one object
+        """" Retrieves an object based on the class name and its ID,
+        None if not found
+
         cls (class): name of the class
         id  (str): id of the object
         """
@@ -84,7 +86,6 @@ class DBStorage:
             if isinstance(obj, cls) and obj.id == id:
                 return obj
         return None
-
 
     def count(self, cls=None):
         """ A method to count the number of objects in storage
