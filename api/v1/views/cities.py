@@ -18,11 +18,11 @@ def cities_state(state_id):
     if not data:
         abort(404)
 
-    info = []
-    for info in data.cities:
-        info.append(info.to_dict())
+    cities = [city.to_dict() for city in data.cities]
+
     if request.method == 'GET':
-        return jsonify(info)
+        return jsonify(cities)
+
 
     if request.method == 'POST':
         if not request.get_json():
