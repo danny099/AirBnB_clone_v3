@@ -12,64 +12,64 @@ from models.user import User
                  strict_slashes=False)
 def places_of_city(city_id):
     """
-        Route for handle http methods for requested place by city
+        Retrieves the list of all Place objects of a City
         city_id: Is the id of the searched city
     """
-    city = storage.get(City, city_id)
+    data = storage.get(City, city_id)
 
-    if not city:
+    if not data:
         abort(404)
 
-    info_city = []
-    for info in city.places:
-        info_city.append(info.to_dict())
+    info = []
+    for info in data.places:
+        info.append(info.to_dict())
     if request.method == 'GET':
-        return jsonify(info_city)
+        return jsonify(info)
 
     if request.method == 'POST':
-        data = request.get_json()
-        if not data:
+        res = request.get_json()
+        if not res:
             abort(400, 'Not a JSON')
-        if "user_id" not in data:
+        if "user_id" not in res:
             abort(400, 'Missing user_id')
-        if storage.get(User, data["user_id"]) is None:
+        if storage.get(User, res["user_id"]) is None:
             abort(404)
-        if "name" not in data:
+        if "name" not in res:
             abort(400, 'Missing name')
 
-        data['city_id'] = city_id
-        new_place = Place(**data)
-        new_place.save()
+        res['city_id'] = city_id
+        newPlace = Place(**res)
+        newPlace.save()
         storage.save()
-        return jsonify(new_place.to_dict()), 201
+        return jsonify(newPlace.to_dict()), 201
 
 
 @app_views.route('/places/<place_id>', methods=['GET', 'DELETE', 'PUT'],
                  strict_slashes=False)
 def places_by_id(place_id):
     """
-        Route for a city that handle http methods
+        Retrieves the list of all Place objects of a City
         place_id: is the id of the searched place
     """
-    place = storage.get(Place, place_id)
+    data = storage.get(Place, place_id)
 
-    if not place:
+    if not data:
         abort(404)
 
     if request.method == 'GET':
-        return jsonify(place.to_dict())
+        return jsonify(data.to_dict())
 
     if request.method == 'DELETE':
-        storage.delete(place)
+        storage.delete(data)
         storage.save()
         return jsonify({}), 200
 
     if request.method == 'PUT':
-        info = request.get_json()
-        if not info:
+        res = request.get_json()
+        if not res:
             abort(400, "Not a JSON")
         dont = ['id', 'created_at', 'updated_at', 'user_id', 'city_id']
-        for key, value in info.items():
+        for key, value in res.items():
             if key in dont:
                 pass
             else:
