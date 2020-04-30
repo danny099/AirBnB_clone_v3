@@ -10,21 +10,21 @@ from models.amenity import Amenity
 @app_views.route('/amenities/<amenity_id>', strict_slashes=False,
                  methods=['GET'])
 def get_amenities(amenity_id=None):
-    """ retrieves all amenities
+    """ Endpoint that retrieves all amenities
         or retrieves one amenity by id
 
         amenity_id: id of the amenity to retrieve
     """
-    allAmenities = storage.all('Amenity')
+    all_amenities = storage.all('Amenity')
     if not amenity_id:
-        data = []
-        for amenity in allAmenities.values():
-            data.append(amenity.to_dict())
-        return jsonify(data)
+        amenity_info = []
+        for amenity in all_amenities.values():
+            amenity_info.append(amenity.to_dict())
+        return jsonify(amenity_info)
     else:
         amenity = "Amenity.{}".format(amenity_id)
-        if amenity in allAmenities:
-            amenity = allAmenities[amenity]
+        if amenity in all_amenities:
+            amenity = all_amenities[amenity]
             return jsonify(amenity.to_dict())
         else:
             abort(404)
@@ -33,15 +33,15 @@ def get_amenities(amenity_id=None):
 @app_views.route('/amenities/<amenity_id>', strict_slashes=False,
                  methods=['DELETE'])
 def delete_amenity(amenity_id):
-    """ deletes a specific amenity
+    """ Endpoint that deletes a specific amenity
         with the id
 
         amenity_id : id of the amenity to delete
     """
-    allAmenities = storage.all('Amenity')
+    all_amenities = storage.all('Amenity')
     amenity = "Amenity.{}".format(amenity_id)
-    if amenity in allAmenities:
-        amenity = allAmenities[amenity]
+    if amenity in all_amenities:
+        amenity = all_amenities[amenity]
         storage.delete(amenity)
         storage.save()
         return jsonify({}), 200
@@ -52,15 +52,15 @@ def delete_amenity(amenity_id):
 @app_views.route('/amenities', strict_slashes=False,
                  methods=['POST'])
 def create_amenity():
-    """ creates a amenity
-        with the datarmation given
+    """ Endpoint that creates a amenity
+        with the information given
     """
-    data = request.get_json()
-    if not data:
+    info = request.get_json()
+    if not info:
         abort(400, 'Not a JSON')
-    if 'name' not in data:
+    if 'name' not in info:
         abort(400, 'Missing name')
-    amenity = Amenity(name=data['name'])
+    amenity = Amenity(name=info['name'])
     storage.new(amenity)
     storage.save()
     return jsonify(amenity.to_dict()), 201
@@ -69,17 +69,17 @@ def create_amenity():
 @app_views.route('/amenities/<amenity_id>', strict_slashes=False,
                  methods=['PUT'])
 def modify_amenity(amenity_id):
-    """ modifies a specific
+    """ An endpoint that modifies a specific
     amenity with the id
     """
-    data = request.get_json()
-    if not data:
+    info = request.get_json()
+    if not info:
         abort(400, 'Not a JSON')
-    allAmenities = storage.all('Amenity')
-    amenityId = "Amenity.{}".format(amenityId)
-    if amenityId in allAmenities:
-        amenity = allAmenities[amenityId]
-        for key, value in data.items():
+    all_amenities = storage.all('Amenity')
+    amenity_id = "Amenity.{}".format(amenity_id)
+    if amenity_id in all_amenities:
+        amenity = all_amenities[amenity_id]
+        for key, value in info.items():
             if key != 'id' and key != 'created_at' and key != 'updated_at':
                 setattr(amenity, key, value)
         amenity.save()
