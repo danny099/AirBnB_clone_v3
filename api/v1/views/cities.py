@@ -23,7 +23,6 @@ def cities_state(state_id):
     if request.method == 'GET':
         return jsonify(cities)
 
-
     if request.method == 'POST':
         if not request.get_json():
             return make_response(jsonify({'error': 'Not a JSON'}), 400)
