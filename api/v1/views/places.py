@@ -20,11 +20,11 @@ def places_of_city(city_id):
     if not city:
         abort(404)
 
-    info = []
+    res = []
     for info in city.places:
-        info.append(info.to_dict())
+        res.append(info.to_dict())
     if request.method == 'GET':
-        return jsonify(info)
+        return jsonify(res)
 
     if request.method == 'POST':
         data = request.get_json()
