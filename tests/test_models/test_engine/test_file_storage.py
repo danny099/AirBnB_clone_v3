@@ -123,13 +123,18 @@ class TestFileStorage(unittest.TestCase):
         models.storage.save()
         self.assertEqual(models.storage.get(State, new_st.id).id, new_st.id)
 
-    @unittest.skipIf(models.storage_t == 'db', "not testing db storage")
-    def test_count(self):
-        """test_count, Retrieving a count of the objects"""
-        self.assertIs(type(models.storage.count()), int)
-        before = models.storage.count(State)
-        new_st = State(name='Sonoma')
-        models.storage.new(new_st)
-        models.storage.save()
-        after = models.storage.count(State)
-        self.assertNotEqual(before, after)
+    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
+    def test_counter(self):
+        """Test count elements"""
+        storage = FileStorage()
+        new_dict = {}
+        for key, value in classes.items():
+            instance = value()
+            instance_key = instance.__class__.__name__ + "." + instance.id
+            new_dict[instance_key] = instance
+        FileStorage._FileStorage__objects = new_dict
+        all_elements = storage.count()
+        elements = 0
+        for cls in classes.values():
+            elements += storage.count(cls)
+        self.assertEqual(all_elements, elements)
